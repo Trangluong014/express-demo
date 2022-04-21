@@ -116,19 +116,18 @@ router.get("/login", function (req, res, next) {
     userName.push(obj.name);
     password.push(obj.password);
   });
-  if (!userName.includes(body.username) || !password.includes(body.password)) {
-    const error = new Error(
-      `Username: ${body.username} or password: ${body.password} is not correct`
-    );
+  if (!userName.includes(body.username)) {
+    const error = new Error(`Username: ${body.username} has not been register`);
+    error.statusCode = 400;
+    throw error;
+  } else if (!password.includes(body.password)) {
+    const error = new Error(`Password is not correct`);
     error.statusCode = 403;
     throw error;
   }
   const token = "123";
   const message = "Sucessfully login";
   const result = { accesstoken: "123" };
-  return res
-    .header("accesstoken", token)
-    .status(200)
-    .send({ data: result, message: message });
+  return sendResponse(200, result, message, res, next);
 });
 module.exports = router;
